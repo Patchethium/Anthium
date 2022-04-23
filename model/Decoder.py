@@ -9,11 +9,11 @@ class Decoder(nn.Module):
   """
 
   def __init__(self, d_model, num_block, output_size):
-    super().__init__()
+    super(Decoder, self).__init__()
     self.encoder = Encoder(
       idim=None,
       attention_dim=d_model,
-      attention_heads=2,
+      attention_heads=4,
       linear_units=d_model * 4,
       num_blocks=num_block,
       input_layer=None,
@@ -43,8 +43,8 @@ class Decoder(nn.Module):
 
   def forward(self, phoneme, mask):
     """
-    :param phoneme: Phoneme already expanded with duration and concat. with pitch and energy. shape: [S,B,N]
-    :return:
+    :param phoneme: Phoneme expanded with duration and concat. with pitch and energy.
+    shape: [#batch, time, idim]
     """
     data, _ = self.encoder(phoneme, mask)
     output1 = self.post(data)
