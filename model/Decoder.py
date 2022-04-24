@@ -17,28 +17,18 @@ class Decoder(nn.Module):
       linear_units=d_model * 4,
       num_blocks=num_block,
       input_layer=None,
-      dropout_rate=0.2,
-      positional_dropout_rate=0.2,
-      attention_dropout_rate=0.2,
-      normalize_before=True,
       positionwise_layer_type="conv1d",
       positionwise_conv_kernel_size=3,
       macaron_style=True,
       pos_enc_layer_type="rel_pos",
       selfattention_layer_type="rel_selfattn",
-      activation_type="swish",
       use_cnn_module=True,
-      cnn_module_kernel=31,
     )
     self.post = nn.Linear(d_model, output_size)
     self.postnet = Postnet(
-      idim=0,
+      idim=d_model,
       odim=output_size,
-      n_layers=5,
-      n_chans=d_model,
-      n_filts=5,
-      use_batch_norm=True,
-      dropout_rate=0.5,
+      n_chans=d_model
     )
 
   def forward(self, phoneme, mask):

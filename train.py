@@ -13,40 +13,11 @@ from torch.utils.data.dataset import Dataset
 from model.Decoder import Decoder
 from model.optimizer import ScheduledOptim
 
+from model.dataset import MelDataset, PhonemeDataset, pad_collate
+
 train_config = yaml.load(open("config/LJSpeech/train.yaml", "r"), Loader=yaml.FullLoader)
 model_config = yaml.load(open("config/LJSpeech/model.yaml", "r"), Loader=yaml.FullLoader)
 preprocess_config = yaml.load(open("config/LJSpeech/preprocess.yaml", "r"), Loader=yaml.FullLoader)
-
-
-class MelDataset(Dataset):
-  def __init__(self, mel_path):
-    self.mel_path = mel_path
-    self.fn_list = os.listdir(mel_path)
-    self.fn_list.sort()
-
-  def __len__(self):
-    return len(self.fn_list)
-
-  def __getitem__(self, item):
-    return torch.from_numpy(np.load(os.path.join(self.mel_path, self.fn_list[item]))).T
-
-
-class PhonemeDataset(Dataset):
-  def __init__(self, ph_path):
-    data = np.load(ph_path, allow_pickle=True)
-    self.data = [torch.from_numpy(x) for x in data]
-
-  def __len__(self):
-    return len(self.data)
-
-  def __getitem__(self, item):
-    return self.data[item]
-
-
-def pad_collate(tensor_list: List[torch.Tensor]):
-  length_list = np.array([len(x) for x in tensor_list], dtype=np.int32)
-  mask = make_non_pad_mask(length_list)
-  return pad_sequence(tensor_list), mask
 
 
 def train_decoder():
@@ -69,7 +40,6 @@ def train_decoder():
   step = 1
   epoch = 1
 
-  mse = nn.MSELoss()
   mae = nn.L1Loss()
   while True:
     for mel, (phoneme, mask) in zip(mel_dl, ph_dl):
@@ -109,7 +79,7 @@ def train_decoder():
 
       step += 1
     epoch += 1
-    print(f"epoch {epoch}")
+    print(f"epoch {epoch}, step: {step}, loss: {loss.item()}")
 
 
 
