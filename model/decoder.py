@@ -48,16 +48,16 @@ class Decoder(nn.Module):
     """
     phoneme: Phoneme already expanded with duration and concat. with pitch and energy. shape: [S,B,N]
     """
-    p_slice = phoneme[:,:,0]
-    p_variance = phoneme[:,:,1:]
+    p_slice = phoneme[:, :, 0]
+    p_variance = phoneme[:, :, 1:]
     p_slice = self.input_layer(p_slice.long())
-    p_input = torch.cat((p_slice, p_variance), dim=-1) # [S,B,N] N=16
+    p_input = torch.cat((p_slice, p_variance), dim=-1)  # [S,B,N] N=16
     data1 = self.pre(p_input)
     data2, _ = self.encoder(data1, mask)
     output1 = self.post(data2)
     if mask is not None:
-      output1 = output1.masked_fill(~mask.transpose(1,2),0.0)
+      output1 = output1.masked_fill(~mask.transpose(1, 2), 0.0)
     output2 = output1 + self.postnet(output1.transpose(1, 2)).transpose(1, 2)
     if mask is not None:
-      output2 = output2.masked_fill(~mask.transpose(1,2),0.0)
+      output2 = output2.masked_fill(~mask.transpose(1, 2), 0.0)
     return output1, output2

@@ -18,6 +18,7 @@ def create_expand_mat(dur):
       col_idx += 1
   return expand_mat
 
+
 def expand(phoneme, dur):
   """
   expand phoneme tensor with dur

@@ -2,7 +2,6 @@ import argparse
 import json
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch.cuda
 from scipy.io import wavfile
@@ -44,7 +43,7 @@ def inference(h):
 
     opt1, opt2 = decoder(p_emb.unsqueeze(0), None)
 
-    wave = vocoder(opt2.transpose(1,2))
+    wave = vocoder(opt2.transpose(1, 2))
 
     wave = (
         wave.cpu().numpy()

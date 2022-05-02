@@ -1,3 +1,6 @@
+"""
+This file comes from FastSpeech2, Chung-Ming Chien, MIT Licence, modified
+"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

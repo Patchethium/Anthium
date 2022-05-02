@@ -1,6 +1,4 @@
-g2p_en
 librosa
-matplotlib
 numpy
 PyYAML
 scipy
