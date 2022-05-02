@@ -22,20 +22,18 @@ pip install -r requirement.txt
 
 ### Download pretrained models
 
-Download the three models from my [Google Drive](https://drive.google.com/drive/folders/1cpSD60lO3DCzcrdoVwF6zBEmV6DdQwIP?usp=sharing) and the hifi-gan vocoder [here](https://drive.google.com/drive/folders/1-eEYTB5Av9jNql0WGBlRoi-WH2J7bp5Y). For the vocoder, I recommend LJ_V1.
-
-Put all of them into a directory like below:
+Download all the files from my [Google Drive](https://drive.google.com/drive/folders/1cpSD60lO3DCzcrdoVwF6zBEmV6DdQwIP?usp=sharing) and put them into a directory like below:
 ```
-folder
+-folder
   -dec-step-180000.pth.tar
   -vp-epoch-1000.pth.tar
   -config.json
-  -generator_V1
+  -generator_LJSpeech.pth.tar
 ```
 ### Inference
 
 ```python
-python inference.py --text "Hello, world!" --pretrained_path /home/.../pretrained
+python inference.py --text "Hello, world!" --pretrained_path /home/.../folder
 ```
 
 Now you may find the synthesised audio at `./output/`.
