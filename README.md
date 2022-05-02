@@ -1,6 +1,6 @@
 # Anthe-training
 
-Training recipe for the TTS system Anthe.
+Training recipe for the TTS system [Anthe](https://github.com/Patchethium/Anthe).
 
 This project is still in its very early stage, don't expect you'd find anything useful here for now.
 
