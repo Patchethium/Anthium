@@ -10,7 +10,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import Dataset
 
-from model.Decoder import Decoder
+from model.decoder import Decoder
 from model.optimizer import ScheduledOptim
 
 from model.dataset import MelDataset, PhonemeDataset, pad_collate

@@ -30,7 +30,7 @@ def get_phoneme_vec(text:str):
       else:
         ph = p
 
-      ph_vec = numpy.array([marks.index(ph)], dtype="float32")
+      ph_vec = numpy.array([marks.index(ph) + 1], dtype="float32")
 
       pos_vec = np.zeros((2,), dtype="float32")
       if i == 0:

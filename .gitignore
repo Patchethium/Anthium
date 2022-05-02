@@ -3,6 +3,10 @@
 
 /test/
 
+/pretrained/
+
+/output/
+
 ckpt
 
 __pycache__/
