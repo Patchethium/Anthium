@@ -33,7 +33,7 @@ class VarianceEncoder(nn.Module):
     )
 
   def forward(self, phoneme, masks):
-    ph_slice = phoneme[:, :, 0] + 1
+    ph_slice = phoneme[:, :, 0]
     p_var = phoneme[:, :, 1:]
     ph_emb = self.input_layer(ph_slice.long())
     ph_input = torch.cat((ph_emb, p_var), dim=-1)

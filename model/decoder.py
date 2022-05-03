@@ -45,9 +45,6 @@ class Decoder(nn.Module):
     )
 
   def forward(self, phoneme, mask):
-    """
-    phoneme: Phoneme already expanded with duration and concat. with pitch and energy. shape: [S,B,N]
-    """
     p_slice = phoneme[:, :, 0]
     p_variance = phoneme[:, :, 1:]
     p_slice = self.input_layer(p_slice.long())
