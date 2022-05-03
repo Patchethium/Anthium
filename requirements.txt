@@ -6,4 +6,4 @@ torch
 tqdm
 
 git+https://github.com/Patchethium/espnet_pytorch_library
-git+https://github.com/Patchethium/g2p_en
+git+https://github.com/Patchethium/g2p
