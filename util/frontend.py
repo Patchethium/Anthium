@@ -7,8 +7,6 @@ from g2p_en import G2p
 
 g2p = G2p()
 
-emb = np.load("/home/patchethium/PycharmProjects/Clio-training/ckpt/PhonemeEmbedding.npy", allow_pickle=True).tolist()
-
 marks = ['', 'AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'B', 'CH', 'D', 'DH', 'EH', 'ER', 'EY', 'F', 'G',
          'HH', 'IH', 'IY', 'JH', 'K', 'L', 'M', 'N', 'NG', 'OW', 'OY', 'P', 'R', 'S', 'SH', 'T',
          'TH', 'UH', 'UW', 'V', 'W', 'Y', 'Z', 'ZH', 'sil', 'sp', 'spn']
