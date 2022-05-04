@@ -12,13 +12,13 @@ from model.variance_predictor import VariancePredictor
 from util.LengthRegulator import expand
 from util.frontend import get_phoneme_vec
 
-MAX_VALUE = 0x7FFF # the max value of int16
+MAX_VALUE = 0x7FFF  # the max value of int16
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 predictor = VariancePredictor(idim=14, edim=9, adim=32, odim=1, kernel_size=3, num_layer=3, l_phoneme=44).to(device)
 decoder = Decoder(idim=16, edim=9, adim=384, odim=80, phoneme_dim=44, num_block=4).to(device)
 vocoder = None
 vocoder_config = None
-mel_sr = 22050 / 256 # sample_rate / hop_size
+mel_sr = 22050 / 256  # sample_rate / hop_size
 
 
 def inference(h):
@@ -88,7 +88,6 @@ def main():
   load_pretrained(vp_path, decoder_path, vocoder_config_path, vocoder_generator_path)
 
   inference(a)
-  pass
 
 
 if __name__ == "__main__":

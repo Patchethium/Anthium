@@ -49,7 +49,6 @@ def get_phoneme_vec(text: str):
 
 
 def get_phoneme_embedding(text: str):
-  global emb
   a = get_phoneme(text)
   phoneme_list_vec = []
   phoneme_list_emb = []
@@ -86,5 +85,4 @@ def get_phoneme_embedding(text: str):
 
 
 if __name__ == "__main__":
-  # emb = np.load("/home/patchethium/PycharmProjects/Clio-training/ckpt/PhonemeEmbedding.npy", allow_pickle=True)
   p = get_phoneme_embedding("Hello_world!")
