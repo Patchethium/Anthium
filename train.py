@@ -1,3 +1,4 @@
+import argparse
 import os
 from typing import List
 
@@ -81,6 +82,23 @@ def train_decoder():
     epoch += 1
     print(f"epoch {epoch}, step: {step}, loss: {loss.item()}")
 
+def main():
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--type", default="decoder")
+  parser.add_argument("--checkpoint_path", default="default")
+  parser.add_argument("--config_path", default="../config/LJSpeech/")
+  parser.add_argument("--type", default="vp", help="which model you'd like to train, values: 'predictor', 'decoder' ")
+
+  a = parser.parse_args()
+
+  model_config = None
+  for i in [os.path.join(a.config_path, fn) for fn in ("model.yaml", "train.yaml", "preprocess.yaml")]:
+    with open(i, "r") as stream:
+      try:
+        model_config = yaml.safe_load(stream)
+      except yaml.YAMLError as exc:
+        print(exc)
+        return
 
 
 if __name__ == "__main__":

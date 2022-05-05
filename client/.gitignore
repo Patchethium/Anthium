@@ -1,0 +1,6 @@
+/node_modules/
+
+# build file is for flask to serve
+#/public/build/
+
+.DS_Store
