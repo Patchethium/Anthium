@@ -59,24 +59,23 @@ def inference(h):
     wavfile.write(os.path.join("./output", "{}.wav".format(h.text)), 22050, wave)
 
 
-def load_pretrained(pred_path, dec_path, voc_conf_path, voc_gen_path):
+def load_pretrained():
   global predictor, decoder, vocoder, device
-  predictor.load_state_dict(torch.load(pred_path, map_location=device))
+  predictor.load_state_dict(torch.load("./pretrained/vp-epoch-1000.pth.tar", map_location=device))
   predictor.to(device)
-  decoder.load_state_dict(torch.load(dec_path, map_location=device)["model"])
+  decoder.load_state_dict(torch.load("./pretrained/dec-step-180000.pth.tar", map_location=device)["model"])
   decoder.to(device)
-  with open(voc_conf_path, "r") as conf:
+  with open("./pretrained/config.json", "r") as conf:
     config = json.load(conf)
   config = AttrDict(config)
   vocoder = Generator(config)
-  vocoder.load_state_dict(torch.load(voc_gen_path, map_location=device)["generator"])
+  vocoder.load_state_dict(torch.load("./pretrained/generator_LJSpeech.pth.tar", map_location=device)["generator"])
   vocoder.remove_weight_norm()
   vocoder.to(device)
 
 
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument('--pretrained_path', default=None)
   parser.add_argument("--text", default="")
   parser.add_argument("--pit_scale", default=1.0)
   parser.add_argument("--eng_scale", default=1.0)
@@ -84,12 +83,7 @@ def main():
 
   a = parser.parse_args()
 
-  vp_path = os.path.join(a.pretrained_path, "vp-epoch-1000.pth.tar")
-  decoder_path = os.path.join(a.pretrained_path, "dec-step-180000.pth.tar")
-  vocoder_config_path = os.path.join(a.pretrained_path, "config.json")
-  vocoder_generator_path = os.path.join(a.pretrained_path, "generator_LJSpeech.pth.tar")
-
-  load_pretrained(vp_path, decoder_path, vocoder_config_path, vocoder_generator_path)
+  load_pretrained()
 
   inference(a)
 

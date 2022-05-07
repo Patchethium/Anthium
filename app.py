@@ -1,11 +1,10 @@
-import argparse
 import json
 import os
 from typing import List, Dict
 
 import numpy as np
 import torch
-from flask import Flask, send_from_directory, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from g2p_en import G2p
 from scipy.io import wavfile
 
@@ -25,15 +24,15 @@ g2p = G2p()
 
 def load_pretrained():
   global predictor, decoder, vocoder
-  predictor.load_state_dict(torch.load("/home/patchethium/PycharmProjects/Anthe-training/pretrained/vp-epoch-1000.pth.tar", map_location=device))
-  decoder.load_state_dict(torch.load("/home/patchethium/PycharmProjects/Anthe-training/pretrained/dec-step-180000.pth.tar", map_location=device)["model"])
+  predictor.load_state_dict(torch.load("./pretrained/vp-epoch-1000.pth.tar", map_location=device))
+  decoder.load_state_dict(torch.load("./pretrained/dec-step-180000.pth.tar", map_location=device)["model"])
   predictor.eval()
   decoder.eval()
-  with open("/home/patchethium/PycharmProjects/Anthe-training/pretrained/config.json", "r") as conf:
+  with open("./pretrained/config.json", "r") as conf:
     config = json.load(conf)
   config = AttrDict(config)
   vocoder = Generator(config)
-  vocoder.load_state_dict(torch.load("/home/patchethium/PycharmProjects/Anthe-training/pretrained/generator_LJSpeech.pth.tar", map_location=device)["generator"])
+  vocoder.load_state_dict(torch.load("./pretrained/generator_LJSpeech.pth.tar", map_location=device)["generator"])
   vocoder.remove_weight_norm()
   vocoder.eval()
 
@@ -59,7 +58,7 @@ def serialize_accent_phrases(dur: np.ndarray, pit: np.ndarray, eng: np.ndarray, 
         }
       )
       idx += 1
-    res.append({"word": k, "marks":mark_list})
+    res.append({"word": k, "marks": mark_list})
   return res
 
 
@@ -98,11 +97,7 @@ def deserialize_accent_phrases(accent_phrase):
 
   opt = expand(ph, dur.squeeze())
 
-  print(opt.shape)
-  print(opt[:,0])
-
   return opt
-
 
 
 def pred_accent_phrases(text: str):
@@ -117,10 +112,10 @@ def pred_accent_phrases(text: str):
 
   return accent_phrases
 
+
 def _synthesis(accent_phrases):
   with torch.no_grad():
     _, mel = decoder(deserialize_accent_phrases(accent_phrases).unsqueeze(0), None)
-    print(mel.shape)
     wave = vocoder(mel.transpose(1, 2))
 
   wave = (
@@ -135,20 +130,27 @@ def _synthesis(accent_phrases):
 
 @app.before_first_request
 def _prepare():
-  print("hello, world!")
   load_pretrained()
 
 
-# Serve Svelte apps
+@app.route("/")
+def index():
+  return send_from_directory('client/public', 'index.html')
+
+
+# Path for all the static files (compiled JS/CSS, etc.)
 @app.route("/<path:path>")
-def svelte_client(path):
-  return send_from_directory('../client/public/build', path)
+def home(path):
+  return send_from_directory('client/public', path)
 
 
 @app.route("/accent_phrases", methods=["GET"])
 def get_accent_phrases():
   text = request.args.get("text", type=str)
+  if text == "":
+    return ""
   return jsonify(pred_accent_phrases(text))
+
 
 @app.route("/synthesis", methods=["POST"])
 def synthesis():
@@ -158,7 +160,6 @@ def synthesis():
 
 
 def main():
-
   app.run()
 
 

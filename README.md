@@ -16,27 +16,75 @@ cd Anthe-training
 ```
 
 ### Install dependencies
+
+Since the web demo needs flask installed, which recommends you to work with it in a virtual env, you may want to create one with:   
+
+```shell
+# create
+python -m venv venv
+# activate
+. venv/bin/activate
+```
+Then install the dependencies  
+
 ```bash
 pip install -r requirement.txt
 ```
 
 ### Download pretrained models
 
-Download all the files from my [Google Drive](https://drive.google.com/drive/folders/1cpSD60lO3DCzcrdoVwF6zBEmV6DdQwIP?usp=sharing) and put them into a directory like below:
+Create `pretrained` folder  
+```bash
+mkdir pretrained
 ```
--folder
-  -dec-step-180000.pth.tar
-  -vp-epoch-1000.pth.tar
-  -config.json
-  -generator_LJSpeech.pth.tar
+Download all the files from my [Google Drive](https://drive.google.com/drive/folders/1cpSD60lO3DCzcrdoVwF6zBEmV6DdQwIP?usp=sharing) and put them into `pretrained` floder, the file structure is shown below:
+```
+Anthe-training/
+  |-pretrained/
+    |-dec-step-180000.pth.tar
+    |-vp-epoch-1000.pth.tar
+    |-config.json
+    |-generator_LJSpeech.pth.tar
+  |-...
 ```
 ### Inference
 
-```python
-python inference.py --text "Hello, world!" --pretrained_path /home/.../folder
+```bash
+python inference.py --text "Hello, world!"
 ```
 
 Now you may find the synthesised audio at `./output/`.
+
+### Web GUI
+
+We also provide a simple web GUI to play with, launch the server with  
+
+```shell
+flask run
+```
+
+Then open [localhost:5000](http://localhost:5000) in the browser, you may find a simple demo page for tuning.
+
+## Development of the web GUI
+
+### Install dependencies
+```shell
+cd client
+
+pnpm install
+```
+### Launch  
+
+Flask server serves a complied svelte frontend, so instead of `pnpm dev`, run
+```shell
+pnpm autobuild
+```
+And then in another shell, run
+```shell
+cd ..
+
+flask run
+```
 
 ## About the name
 
