@@ -12,6 +12,19 @@ marks = ['', 'AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'B', 'CH', 'D', 'DH', 'EH', 'ER
          'TH', 'UH', 'UW', 'V', 'W', 'Y', 'Z', 'ZH', 'sil', 'sp', 'spn']
 
 
+def extract_stress(p:str):
+  stress = None
+  if len(p) == 3 and p != "sil" and p != "spn":
+    ph = p[0: 2]
+    stress = int(p[-1])
+  elif p in string.punctuation:
+    ph = "sp"
+  else:
+    ph = p
+
+  return ph, stress
+
+
 def get_phoneme(text: str):
   return g2p(text, get_mapping=True)
 
@@ -21,14 +34,7 @@ def get_phoneme_vec(text: str):
   phoneme_list_vec = []
   for k, v in a.items():
     for i, p in enumerate(v):
-      stress = None
-      if len(p) == 3 and p != "sil" and p != "spn":
-        ph = p[0: 2]
-        stress = int(p[-1])
-      elif p in string.punctuation:
-        ph = "sp"
-      else:
-        ph = p
+      ph, stress = extract_stress(p)
 
       ph_vec = numpy.array([marks.index(ph) + 1], dtype="float32")
 
@@ -46,3 +52,7 @@ def get_phoneme_vec(text: str):
       phoneme_list_vec.append(input_vec)
 
   return np.stack(phoneme_list_vec)
+
+
+if __name__ == "__main__":
+  print(get_phoneme("Printing, in the only sense of which we are concerned"))
