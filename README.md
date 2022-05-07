@@ -95,6 +95,8 @@ pnpm autobuild
 Then in another terminal, run
 ```shell
 cd ..
+#set the debug mode for flask
+export FLASK_ENV=development
 
 flask run
 ```
