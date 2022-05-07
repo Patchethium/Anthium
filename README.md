@@ -57,13 +57,25 @@ Now you may find the synthesised audio at `./output/`.
 
 ### Web GUI
 
-We also provide a simple web GUI to play with, launch the server with  
+We also provide a simple web GUI, first, you need to build the svelte frontend:
 
 ```shell
+cd client
+
+# install dependencies
+pnpm install
+
+# build the frontend
+pnpm build
+```
+then launch the server with
+```shell
+cd ..
+
 flask run
 ```
 
-Then open [localhost:5000](http://localhost:5000) in the browser, you may find a simple demo page for tuning.
+Finally, open [localhost:5000](http://localhost:5000) in the browser, and you may find the demo page.
 
 ## Development of the web GUI
 
@@ -73,13 +85,14 @@ cd client
 
 pnpm install
 ```
-### Launch  
+### Launch
 
 Flask server serves a complied svelte frontend, so instead of `pnpm dev`, run
+
 ```shell
 pnpm autobuild
 ```
-And then in another shell, run
+Then in another terminal, run
 ```shell
 cd ..
 
