@@ -1,12 +1,10 @@
 <script lang="ts">
   import "fluent-svelte/theme.css";
-  import {Button, RadioButton, Slider} from "fluent-svelte";
-
-  export let name: string;
+  import {Button, Flyout, RadioButton, Slider, TextBox} from "fluent-svelte";
 
   const ctx = new AudioContext();
 
-  let text = "Hello, world!";
+  let text = "";
   type AccentPhrase = {
     mark: string,
     stress: number,
@@ -94,10 +92,25 @@
     }, 0)
   }
 
-  document.addEventListener("keypress", (event: KeyboardEvent)=>{
+  document.addEventListener("keypress", (event: KeyboardEvent) => {
     const input = document.activeElement
-    if (event.key == " " && !(input.id == "input")){
+    if (event.key == " " && !(input.id == "input") && input instanceof HTMLElement) {
+      input.blur()
       synthesis()
+    }
+  })
+
+  let shiftKeyFlag = 1;
+
+  document.addEventListener("keydown", (event: KeyboardEvent) => {
+    if (event.key == "Shift") {
+      shiftKeyFlag = 0;
+    }
+  })
+
+  document.addEventListener("keyup", (event: KeyboardEvent) => {
+    if (event.key == "Shift") {
+      shiftKeyFlag = 1;
     }
   })
 </script>
@@ -112,7 +125,7 @@
 
   <div class="parent">
     <div class="div1">
-      <RadioButton bind:group={curPanel} value="pit" style="margin: 0 0 0 15px">Pitch</RadioButton>
+      <RadioButton bind:group={curPanel} value="pit" style="margin: 0 0 0 30px">Pitch</RadioButton>
       <RadioButton bind:group={curPanel} value="dur" style="margin: 0 0 0 15px">Duration</RadioButton>
       <RadioButton bind:group={curPanel} value="eng" style="margin: 0 0 0 15px">Energy</RadioButton>
     </div>
@@ -120,18 +133,44 @@
       {#each audioStore as audioItem}
         {#each audioItem.marks as marks}
           <div style="display: grid">
-            <div style="block-size: 120px; margin:40px 12px 12px 12px">
+            <div style="block-size: 120px; margin-left:12px; margin-right: 12px">
               {#if curPanel === "pit"}
-                <Slider orientation="vertical" min={0} max={6.5} step={0.01} bind:value={marks.pit}/>
+                <div style="margin-bottom: 5px">{marks.pit.toFixed(2)}</div>
+                <Slider orientation="vertical" min={0} max={6.5} step={0.01} tooltip={false}
+                        on:wheel={(event) => marks.pit += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag}
+                        bind:value={marks.pit}/>
               {:else if curPanel === "dur"}
-                <Slider orientation="vertical" min={0} max={0.3} step={0.001} bind:value={marks.dur}/>
+                <div style="margin-bottom: 5px">{marks.dur.toFixed(2)}</div>
+                <Slider orientation="vertical" min={0} max={0.3} step={0.01} tooltip={false}
+                        on:wheel={(event) => marks.dur += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag}
+                        bind:value={marks.dur}/>
               {:else}
-                <Slider orientation="vertical" min={0} max={4} step={0.01} bind:value={marks.eng}/>
+                <div style="margin-bottom: 5px">{marks.eng.toFixed(2)}</div>
+                <Slider orientation="vertical" min={0} max={4} step={0.01} tooltip={false}
+                        on:wheel={(event) => marks.eng += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag}
+                        bind:value={marks.eng}/>
               {/if}
+              <div>
+                <Flyout placement="bottom">
+                  <div style="cursor: pointer">
+                    {#if marks.stress !== null}
+                      {marks.mark + marks.stress}
+                    {:else}
+                      {marks.mark}
+                    {/if}
+                  </div>
+                  <svelte:fragment slot="flyout">
+                    <TextBox bind:value={marks.mark}/>
+                    {#if marks.stress !== null}
+                      <Slider min={0} max={2} step={1} bind:value={marks.stress}/>
+                    {/if}
+                  </svelte:fragment>
+                </Flyout>
+              </div>
             </div>
-            <div style="margin-bottom: 10px">{marks.mark}</div>
           </div>
         {/each}
+        <div class="space"></div>
       {/each}
     </div>
   </div>
@@ -165,16 +204,28 @@
   .div1 {
     display: flex;
     grid-area: 1 / 1 / 2 / 3;
-    border-radius: 15px 15px 0 0;
-    border: 3px solid #ccc;
-    border-bottom: 0;
   }
 
   .div2 {
     grid-area: 2 / 1 / 6 / 6;
     display: flex;
     overflow: auto;
-    border: 3px solid #ccc;
-    min-height: 200px;
+    border-top: 3px solid #ccc;
+    min-height: 300px;
+    padding: 15px;
+  }
+
+  .div2 .space {
+    padding: 15px;
+  }
+
+  html {
+    overflow: scroll;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0; /* Remove scrollbar space */
+    background: transparent; /* Optional: just make scrollbar invisible */
   }
 </style>
