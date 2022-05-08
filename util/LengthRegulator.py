@@ -8,7 +8,6 @@ def create_expand_mat(dur):
   :param dur:
   :return:
   """
-  print(dur[0])
   expand_mat = torch.zeros((int(np.sum(dur)), dur.shape[0]), dtype=torch.float32)
   col_idx = 0
   N = dur.shape[0]

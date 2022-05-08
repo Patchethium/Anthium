@@ -46,8 +46,6 @@ def train_decoder():
     for mel, (phoneme, mask) in zip(mel_dl, ph_dl):
       opt1, opt2 = model(phoneme.transpose(0, 1), mask.unsqueeze(1))
       mel = mel.transpose(0, 1)
-      print(opt1.shape, mel.shape)
-      print(opt1.dtype, mel.dtype)
       loss2 = mae(opt1, mel)
       loss1 = mae(opt2, mel)
       loss = loss1 + loss2
