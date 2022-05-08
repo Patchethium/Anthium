@@ -23,7 +23,7 @@ Since the web demo needs flask installed, which recommends you to work with it i
 # create
 python -m venv venv
 # activate
-. venv/bin/activate
+. venv/Scripts/activate
 ```
 Then install the dependencies  
 
