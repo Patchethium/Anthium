@@ -62,7 +62,7 @@ def serialize_accent_phrases(dur: np.ndarray, pit: np.ndarray, eng: np.ndarray, 
   return res
 
 
-def deserialize_accent_phrases(accent_phrase):
+def deserialize_accent_phrases(accent_phrase, pit_scale, dur_scale, eng_scale):
   phoneme_list_vec = []
   dur_list = []
   for accent_item in accent_phrase:
@@ -84,6 +84,9 @@ def deserialize_accent_phrases(accent_phrase):
       pit = torch.Tensor([mark["pit"]])
       eng = torch.Tensor([mark["eng"]])
 
+      pit = pit * pit_scale
+      eng = eng * eng_scale
+
       input_vec = np.concatenate((ph_vec, pos_vec, stress_vec, pit, eng), axis=-1)
 
       dur_list.append(dur)
@@ -94,6 +97,8 @@ def deserialize_accent_phrases(accent_phrase):
   dur = np.stack(dur_list)
 
   dur = np.rint(dur * mel_sr)
+
+  dur = dur * dur_scale
 
   opt = expand(ph, dur.squeeze())
 
@@ -113,9 +118,9 @@ def pred_accent_phrases(text: str):
   return accent_phrases
 
 
-def _synthesis(accent_phrases):
+def _synthesis(accent_phrases, pit_scale, dur_scale, eng_scale):
   with torch.no_grad():
-    _, mel = decoder(deserialize_accent_phrases(accent_phrases).unsqueeze(0), None)
+    _, mel = decoder(deserialize_accent_phrases(accent_phrases, pit_scale, dur_scale, eng_scale).unsqueeze(0), None)
     wave = vocoder(mel.transpose(1, 2))
 
   wave = (
@@ -155,7 +160,10 @@ def get_accent_phrases():
 @app.route("/synthesis", methods=["POST"])
 def synthesis():
   accent_phrases = request.json
-  _synthesis(accent_phrases)
+  pit_scale = request.args.get("pit_scale", type=float, default=1.0)
+  dur_scale = request.args.get("dur_scale", type=float, default=1.0)
+  eng_scale = request.args.get("eng_scale", type=float, default=1.0)
+  _synthesis(accent_phrases, pit_scale, dur_scale, eng_scale)
   return send_file("./output/result.wav", as_attachment=True)
 
 

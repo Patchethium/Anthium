@@ -41,7 +41,7 @@ def inference(h):
     dur = np.rint(dur * mel_sr).numpy()
     p_emb = expand(p_emb, dur)
 
-    opt1, opt2 = decoder(p_emb.unsqueeze(0), None)
+    _, opt2 = decoder(p_emb.unsqueeze(0), None)
 
     wave = vocoder(opt2.transpose(1, 2))
 

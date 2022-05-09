@@ -1,6 +1,6 @@
 <script lang="ts">
   import "fluent-svelte/theme.css";
-  import {Button, Flyout, RadioButton, Slider, TextBox} from "fluent-svelte";
+  import {Button, Flyout, RadioButton, Slider, TextBlock, TextBox} from "fluent-svelte";
 
   const ctx = new AudioContext();
 
@@ -50,7 +50,12 @@
       redirect: 'follow'
     };
 
-    fetch("/synthesis", requestOptions)
+    const URL = "/synthesis?" +
+                "pit_scale=" + pit_scale + "&" +
+                "dur_scale=" + dur_scale + "&" +
+                "eng_scale=" + eng_scale
+
+    fetch(URL, requestOptions)
       .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
         audioBuffer = copy(arrayBuffer);
@@ -113,13 +118,17 @@
       shiftKeyFlag = 1;
     }
   })
+
+  let dur_scale = 1.0
+  let pit_scale = 1.0
+  let eng_scale = 1.0
 </script>
 
 <main>
   <div>
     <Button variant="accent" on:click={synthesis}>Play</Button>
     <Button on:click={fetchAccentPhrase}>Flush</Button>
-    <input id="input" bind:value={text}>
+    <input style="min-width: 50%;" id="input" bind:value={text}>
     <Button on:click={downloadSound}>Export</Button>
   </div>
 
@@ -128,6 +137,17 @@
       <RadioButton bind:group={curPanel} value="pit" style="margin: 0 0 0 30px">Pitch</RadioButton>
       <RadioButton bind:group={curPanel} value="dur" style="margin: 0 0 0 15px">Duration</RadioButton>
       <RadioButton bind:group={curPanel} value="eng" style="margin: 0 0 0 15px">Energy</RadioButton>
+    </div>
+    <div class="sliders">
+      <Slider min={0} max={2} step={0.01} tooltip={false} bind:value={pit_scale} on:wheel={(event) => pit_scale += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag} />
+      <div style="margin: 5px">{pit_scale.toFixed(2)}</div>
+      <div style="margin: 5px">Pitch Scale</div>
+      <Slider min={0} max={2} step={0.01} tooltip={false} bind:value={dur_scale} on:wheel={(event) => dur_scale += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag}/>
+      <div style="margin: 5px">{dur_scale.toFixed(2)}</div>
+      <div style="margin: 5px">Duration Scale</div>
+      <Slider min={0} max={2} step={0.01} tooltip={false} bind:value={eng_scale} on:wheel={(event) => eng_scale += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag} />
+      <div style="margin: 5px">{eng_scale.toFixed(2)}</div>
+      <div style="margin: 5px">Energy Scale</div>
     </div>
     <div class="div2">
       {#each audioStore as audioItem}
@@ -203,7 +223,7 @@
 
   .div1 {
     display: flex;
-    grid-area: 1 / 1 / 2 / 3;
+    grid-area: 1 / 1 / 2 / 2;
   }
 
   .div2 {
@@ -219,9 +239,10 @@
     padding: 15px;
   }
 
-  html {
-    overflow: scroll;
-    overflow-x: hidden;
+  .sliders {
+    grid-area: 1 / 2 / 2 / 5;
+    display: flex;
+    margin: 5px;
   }
 
   ::-webkit-scrollbar {
