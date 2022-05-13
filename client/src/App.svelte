@@ -51,9 +51,9 @@
     };
 
     const URL = "/synthesis?" +
-                "pit_scale=" + pit_scale + "&" +
-                "dur_scale=" + dur_scale + "&" +
-                "eng_scale=" + eng_scale
+                "pit_shift=" + pit_shift.toFixed(2) + "&" +
+                "dur_scale=" + dur_scale.toFixed(2) + "&" +
+                "eng_shift=" + eng_shift.toFixed(2)
 
     fetch(URL, requestOptions)
       .then(response => response.arrayBuffer())
@@ -120,8 +120,8 @@
   })
 
   let dur_scale = 1.0
-  let pit_scale = 1.0
-  let eng_scale = 1.0
+  let pit_shift = 0
+  let eng_shift = 0
 </script>
 
 <main>
@@ -139,14 +139,14 @@
       <RadioButton bind:group={curPanel} value="eng" style="margin: 0 0 0 15px">Energy</RadioButton>
     </div>
     <div class="sliders">
-      <Slider min={0} max={2} step={0.01} tooltip={false} bind:value={pit_scale} on:wheel={(event) => pit_scale += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag} />
-      <div style="margin: 5px">{pit_scale.toFixed(2)}</div>
+      <Slider min={-0.5} max={0.5} step={0.001} tooltip={false} bind:value={pit_shift} on:wheel={(event) => pit_shift += 0.001 * -Math.sign(event.deltaY) * shiftKeyFlag} />
+      <div style="margin: 5px">{pit_shift.toFixed(2)}</div>
       <div style="margin: 5px">Pitch Scale</div>
       <Slider min={0} max={2} step={0.01} tooltip={false} bind:value={dur_scale} on:wheel={(event) => dur_scale += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag}/>
       <div style="margin: 5px">{dur_scale.toFixed(2)}</div>
       <div style="margin: 5px">Duration Scale</div>
-      <Slider min={0} max={2} step={0.01} tooltip={false} bind:value={eng_scale} on:wheel={(event) => eng_scale += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag} />
-      <div style="margin: 5px">{eng_scale.toFixed(2)}</div>
+      <Slider min={-0.5} max={0.5} step={0.001} tooltip={false} bind:value={eng_shift} on:wheel={(event) => eng_shift += 0.001 * -Math.sign(event.deltaY) * shiftKeyFlag} />
+      <div style="margin: 5px">{eng_shift.toFixed(2)}</div>
       <div style="margin: 5px">Energy Scale</div>
     </div>
     <div class="div2">
@@ -156,7 +156,7 @@
             <div style="block-size: 120px; margin-left:12px; margin-right: 12px">
               {#if curPanel === "pit"}
                 <div style="margin-bottom: 5px">{marks.pit.toFixed(2)}</div>
-                <Slider orientation="vertical" min={0} max={6.5} step={0.01} tooltip={false}
+                <Slider orientation="vertical" min={3.0} max={6.5} step={0.01} tooltip={false}
                         on:wheel={(event) => marks.pit += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag}
                         bind:value={marks.pit}/>
               {:else if curPanel === "dur"}
