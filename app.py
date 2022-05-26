@@ -9,7 +9,7 @@ from g2p_en import G2p
 from scipy.io import wavfile
 
 from model import VariancePredictor, Decoder, AttrDict, Generator
-from util.LengthRegulator import expand
+from util.length_regulator import expand
 from util.frontend import get_phoneme_vec, extract_stress, marks
 
 MAX_VALUE = 0x7FFF  # the max value of int16

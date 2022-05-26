@@ -9,7 +9,7 @@ from scipy.io import wavfile
 from model import Generator, AttrDict
 from model.decoder import Decoder
 from model.variance_predictor import VariancePredictor
-from util.LengthRegulator import expand
+from util.length_regulator import expand
 from util.frontend import get_phoneme_vec
 
 MAX_VALUE = 0x7FFF  # the max value of int16
