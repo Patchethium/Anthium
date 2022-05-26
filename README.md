@@ -4,9 +4,9 @@ Training recipe for the TTS system [Anthe](https://github.com/Patchethium/Anthe)
 
 This project is still in its very early stage, don't expect you'd find anything useful here for now.
 
-## Inferencing
+## Inference
 
-At this point this repostory only supports inferencing from pretrained models, I'll update the preprocessing and training part as soon as possible.
+At this point this repository only supports inference from pre-trained models, I'll update the preprocessing and training part as soon as possible.
 
 ### Clone this repo
 
@@ -17,7 +17,7 @@ cd Anthe-training
 
 ### Install dependencies
 
-Since the web demo needs flask installed, which recommends you to work with it in a virtual env, you may want to create one with:   
+Since the web demo needs flask installed, which recommends you to work with it in a virtual environment, you may want to create one with:   
 
 ```shell
 # create
@@ -53,7 +53,7 @@ Anthe-training/
 python inference.py --text "Hello, world!"
 ```
 
-Now you may find the synthesised audio at `./output/`.
+Now you may find the synthesized audio at `./output/`.
 
 ### Web GUI
 
