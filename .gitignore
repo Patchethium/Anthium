@@ -12,3 +12,5 @@ ckpt
 __pycache__/
 
 /venv/
+
+data
