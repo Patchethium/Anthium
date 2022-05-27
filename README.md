@@ -2,13 +2,13 @@
 
 Training recipe for the TTS system [Anthe](https://github.com/Patchethium/Anthe).
 
-This project is still in its very early stage, don't expect you'd find anything useful here for now.
+This project is still in its **very** early stage, don't expect you'd find anything useful here for now.
 
 ## Inference
 
 At this point this repository only supports inference from pre-trained models, I'll update the preprocessing and training part as soon as possible.
 
-### Clone this repo
+### Clone this repository
 
 ```bash
 git clone https://github.com/Patchethium/Anthe-training.git
@@ -31,7 +31,7 @@ Then install the dependencies
 pip install -r requirement.txt
 ```
 
-### Download pretrained models
+### Download pre-trained models
 
 Create `pretrained` folder  
 ```bash
@@ -57,7 +57,8 @@ Now you may find the synthesized audio at `./output/`.
 
 ### Web GUI
 
-We also provide a simple web GUI, first, you need to build the svelte frontend:
+We also provide a simple web GUI for inference.  
+First, you need to build the svelte frontend:
 
 ```shell
 cd client
@@ -68,14 +69,14 @@ pnpm install
 # build the frontend
 pnpm build
 ```
-then launch the server with
+then launch the server
 ```shell
 cd ..
 
 flask run
 ```
 
-Finally, open [localhost:5000](http://localhost:5000) in the browser, and you may find the demo page.
+open [localhost:5000](http://localhost:5000) in the browser, and you may find the demo page.
 
 ## Development of the web GUI
 
@@ -87,7 +88,7 @@ pnpm install
 ```
 ### Launch
 
-Flask server serves a complied svelte frontend, so instead of `pnpm dev`, run
+Flask serves a complied svelte frontend, so instead of `pnpm dev`, run
 
 ```shell
 pnpm autobuild
@@ -95,8 +96,11 @@ pnpm autobuild
 Then in another terminal, run
 ```shell
 cd ..
-#set the debug mode for flask
+# set the debug mode for flask
+# for Linux and OS X
 export FLASK_ENV=development
+# for Windows Powershell
+$env:FLASK_ENV = "development"
 
 flask run
 ```
@@ -105,4 +109,6 @@ flask run
 
 Anthe<sup>[\[wikipedia\]](https://en.wikipedia.org/wiki/Anthe_(moon))</sup>(/ˈænθiː/;アンテ) is also known as Saturn XLIX, a very small natural satellite of Saturn, named after one of the Alkyonides; the name means flowery.
 
-Note: At the beginning I named it after one of the Muses, Clio, but later moved to Anthe to avoid [Clio the programming language](https://github.com/clio-lang/clio).
+## License
+
+This repository(training recipe for Anthe) is released under GNU General Public License Version 3.
