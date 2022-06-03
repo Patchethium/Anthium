@@ -1,0 +1,14 @@
+{
+  "spellright.language": [
+    "en_US"
+  ],
+  "spellright.documentTypes": [
+    "markdown",
+    "latex",
+    "plaintext"
+  ],
+  "python.formatting.provider": "black",
+  "editor.tabSize": 4,
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": true
+}
