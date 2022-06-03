@@ -1,0 +1,49 @@
+name: LJSpeech
+lang: en
+struct: LJSpeech # LJSpeech / ITA / CMU
+size: 13100
+model: anthe-legacy
+
+phoneset: ARPABET
+phonesize: 43 # 0 for padding
+
+
+n_fft: 1024
+num_mels: 80
+sampling_rate: 22050
+hop_size: 256
+win_size: 1024
+fmin: 0
+fmax: 8000
+
+
+preprocess:
+  pit:
+    conditioned: true
+  eng:
+    conditioned: true
+
+predictor:
+  d_emb: 9
+  d_pos: 2
+  d_stress: 3
+  d_attn: 32
+  num_layer: 8
+  kernel_size: 3
+  optimizer:
+    lr: 0.001
+    betas: [0.9, 0.98]
+    eps: 0.000000009
+  scheduler:
+    gamma: 0.9
+
+decoder:
+  d_emb: 9
+  d_pos: 2
+  d_stress: 3
+  d_attn: 32
+
+
+vocoder:
+  type: HifiGAN-V1 # HifiGAN-V2 / HifiGAN-V3
+  

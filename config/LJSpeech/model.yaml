@@ -1,3 +1,0 @@
-decoder:
-  d_model: 16
-  num_block: 4
