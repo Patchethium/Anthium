@@ -37,7 +37,7 @@ Create `pretrained` folder
 ```bash
 mkdir pretrained
 ```
-Download all the files from my [Google Drive](https://drive.google.com/drive/folders/1cpSD60lO3DCzcrdoVwF6zBEmV6DdQwIP?usp=sharing) and put them into `pretrained` floder, the file structure is shown below:
+Download all the files from my [Google Drive](https://drive.google.com/drive/folders/1cpSD60lO3DCzcrdoVwF6zBEmV6DdQwIP?usp=sharing) and put them into `pretrained` folder, the file structure is shown below:
 ```
 Anthe-training/
   |-pretrained/

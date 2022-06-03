@@ -1,27 +1,38 @@
 import yaml
+import traceback
+import os
+import collections
 
-config = None
 
-class Config:
-  def __init__(corpus: str):
-    config_path = "..corpus/{corpus}/config.yaml"
-    try:
-      with open(config_path, "r") as stream:
-        conf_dict = yaml.load_all(stream)
-    except:
-      print("Failed to read config from corpus {corpus}")
-    self.conf_dict = conf_dict
-  
-  def __call__(self):
-    return self.conf_dict
+class DictWrapper(collections.Mapping):
+    def __init__(self, data):
+        self._data = data
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __len__(self):
+        return len(self._data)
+
+    def __iter__(self):
+        return iter(self._data)
+
 
 def get_config(corpus: str):
-  """
-  get a parsed config from the corpse specified
-  
-  corpus: string, the corpus name, which means name of the folder containing all the stuff
+    base = os.getcwd()
+    yaml_path = os.path.join(base, "corpus", corpus, "config.yaml")
+    yml_path = os.path.join(base, "corpus", corpus, "config.yml")
 
-  """
-  if config is None:
-    config = Config(corpus)
-  return config
+    # umm, ugly...
+    try:
+        stream = open(yaml_path, "r")
+    except:
+        try:
+            stream = open(yml_path, "r")
+        except:
+            print(f"Failed reading config file of {corpus}")
+            print(traceback.format_exc())
+    conf_dict = yaml.safe_load(stream)
+    stream.close()
+    return conf_dict
+
