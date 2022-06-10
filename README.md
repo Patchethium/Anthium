@@ -111,4 +111,4 @@ Anthe<sup>[\[wikipedia\]](https://en.wikipedia.org/wiki/Anthe_(moon))</sup>(/ËˆÃ
 
 ## License
 
-This repository(training recipe for Anthe) is released under GNU General Public License Version 3.
+This repository(training recipe for Anthe) is released under Apache License, version 2.0.
