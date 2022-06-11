@@ -60,7 +60,6 @@
         let newAudioStore = JSON.parse(result);
         audioStore[idx] = newAudioStore[idx];
         audioStore = audioStore;
-        console.log("Hello!");
       })
       .catch(error => console.log('error', error));
   }
@@ -148,11 +147,12 @@
   function handlePhonemeInput (e: any, i: number, j: number){
     const newPhoneme:string = e.target.value;
 
-    if (newPhoneme.length == 0){
+    if (newPhoneme == "") {
       audioStore[i].marks.splice(j,1);
+      audioStore = audioStore;
       return;
     }
-    
+
     const phonemes = newPhoneme.split(",");
     const newAccentItems = []
     let stress: null|number = null;
@@ -234,7 +234,7 @@
               {/if}
               <div>
                 <Flyout placement="right">
-                  <div style="cursor: pointer" on:click={()=>{console.log("hello?")}}>
+                  <div style="cursor: pointer">
                     {#if marks.stress !== null}
                       {marks.mark + marks.stress}
                     {:else}

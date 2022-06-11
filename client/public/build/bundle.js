@@ -5187,16 +5187,16 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[36] = list[i];
-    	child_ctx[38] = i;
+    	child_ctx[35] = list[i];
+    	child_ctx[37] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[11] = list[i];
-    	child_ctx[39] = list;
-    	child_ctx[40] = i;
+    	child_ctx[38] = list;
+    	child_ctx[39] = i;
     	return child_ctx;
     }
 
@@ -5377,7 +5377,7 @@ var app = (function () {
     	}
 
     	function wheel_handler_5(...args) {
-    		return /*wheel_handler_5*/ ctx[27](/*marks*/ ctx[11], /*each_value_1*/ ctx[39], /*j*/ ctx[40], ...args);
+    		return /*wheel_handler_5*/ ctx[27](/*marks*/ ctx[11], /*each_value_1*/ ctx[38], /*j*/ ctx[39], ...args);
     	}
 
     	let slider_props = {
@@ -5404,7 +5404,7 @@ var app = (function () {
     			create_component(slider.$$.fragment);
     			set_style(div, "margin-bottom", "5px");
     			attr_dev(div, "class", "svelte-1gsx3hw");
-    			add_location(div, file, 192, 16, 7300);
+    			add_location(div, file, 192, 16, 7296);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5468,7 +5468,7 @@ var app = (function () {
     	}
 
     	function wheel_handler_4(...args) {
-    		return /*wheel_handler_4*/ ctx[25](/*marks*/ ctx[11], /*each_value_1*/ ctx[39], /*j*/ ctx[40], ...args);
+    		return /*wheel_handler_4*/ ctx[25](/*marks*/ ctx[11], /*each_value_1*/ ctx[38], /*j*/ ctx[39], ...args);
     	}
 
     	let slider_props = {
@@ -5495,7 +5495,7 @@ var app = (function () {
     			create_component(slider.$$.fragment);
     			set_style(div, "margin-bottom", "5px");
     			attr_dev(div, "class", "svelte-1gsx3hw");
-    			add_location(div, file, 187, 16, 6948);
+    			add_location(div, file, 187, 16, 6944);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5559,7 +5559,7 @@ var app = (function () {
     	}
 
     	function wheel_handler_3(...args) {
-    		return /*wheel_handler_3*/ ctx[23](/*marks*/ ctx[11], /*each_value_1*/ ctx[39], /*j*/ ctx[40], ...args);
+    		return /*wheel_handler_3*/ ctx[23](/*marks*/ ctx[11], /*each_value_1*/ ctx[38], /*j*/ ctx[39], ...args);
     	}
 
     	let slider_props = {
@@ -5586,7 +5586,7 @@ var app = (function () {
     			create_component(slider.$$.fragment);
     			set_style(div, "margin-bottom", "5px");
     			attr_dev(div, "class", "svelte-1gsx3hw");
-    			add_location(div, file, 182, 16, 6572);
+    			add_location(div, file, 182, 16, 6568);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5700,8 +5700,6 @@ var app = (function () {
     // (199:16) <Flyout placement="right">
     function create_default_slot(ctx) {
     	let div;
-    	let mounted;
-    	let dispose;
 
     	function select_block_type_1(ctx, dirty) {
     		if (/*marks*/ ctx[11].stress !== null) return create_if_block;
@@ -5717,16 +5715,11 @@ var app = (function () {
     			if_block.c();
     			set_style(div, "cursor", "pointer");
     			attr_dev(div, "class", "svelte-1gsx3hw");
-    			add_location(div, file, 199, 18, 7715);
+    			add_location(div, file, 199, 18, 7711);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     			if_block.m(div, null);
-
-    			if (!mounted) {
-    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[29], false, false, false);
-    				mounted = true;
-    			}
     		},
     		p: function update(ctx, dirty) {
     			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block) {
@@ -5744,8 +5737,6 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     			if_block.d();
-    			mounted = false;
-    			dispose();
     		}
     	};
 
@@ -5768,7 +5759,7 @@ var app = (function () {
     	let dispose;
 
     	function change_handler(...args) {
-    		return /*change_handler*/ ctx[28](/*i*/ ctx[38], /*j*/ ctx[40], ...args);
+    		return /*change_handler*/ ctx[28](/*i*/ ctx[37], /*j*/ ctx[39], ...args);
     	}
 
     	const block = {
@@ -5780,7 +5771,7 @@ var app = (function () {
     			: /*marks*/ ctx[11].stress);
 
     			attr_dev(input, "class", "svelte-1gsx3hw");
-    			add_location(input, file, 207, 20, 8074);
+    			add_location(input, file, 207, 20, 8031);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, input, anchor);
@@ -5860,15 +5851,15 @@ var app = (function () {
     			div0 = element("div");
     			create_component(flyout.$$.fragment);
     			attr_dev(div0, "class", "svelte-1gsx3hw");
-    			add_location(div0, file, 197, 14, 7646);
+    			add_location(div0, file, 197, 14, 7642);
     			set_style(div1, "block-size", "120px");
     			set_style(div1, "margin-left", "12px");
     			set_style(div1, "margin-right", "12px");
     			attr_dev(div1, "class", "svelte-1gsx3hw");
-    			add_location(div1, file, 180, 12, 6445);
+    			add_location(div1, file, 180, 12, 6441);
     			set_style(div2, "display", "grid");
     			attr_dev(div2, "class", "svelte-1gsx3hw");
-    			add_location(div2, file, 179, 10, 6404);
+    			add_location(div2, file, 179, 10, 6400);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -5908,7 +5899,7 @@ var app = (function () {
 
     			const flyout_changes = {};
 
-    			if (dirty[0] & /*audioStore*/ 2 | dirty[1] & /*$$scope*/ 1024) {
+    			if (dirty[0] & /*audioStore*/ 2 | dirty[1] & /*$$scope*/ 512) {
     				flyout_changes.$$scope = { dirty, ctx };
     			}
 
@@ -5948,7 +5939,7 @@ var app = (function () {
     	let t;
     	let div;
     	let current;
-    	let each_value_1 = /*audioItem*/ ctx[36].marks;
+    	let each_value_1 = /*audioItem*/ ctx[35].marks;
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
 
@@ -5969,7 +5960,7 @@ var app = (function () {
     			t = space();
     			div = element("div");
     			attr_dev(div, "class", "space svelte-1gsx3hw");
-    			add_location(div, file, 214, 8, 8336);
+    			add_location(div, file, 214, 8, 8293);
     		},
     		m: function mount(target, anchor) {
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -5982,7 +5973,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			if (dirty[0] & /*audioStore, handlePhonemeInput, shiftKeyFlag, curPanel*/ 1038) {
-    				each_value_1 = /*audioItem*/ ctx[36].marks;
+    				each_value_1 = /*audioItem*/ ctx[35].marks;
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -6319,37 +6310,37 @@ var app = (function () {
     			set_style(input, "min-width", "50%");
     			attr_dev(input, "id", "input");
     			attr_dev(input, "class", "svelte-1gsx3hw");
-    			add_location(input, file, 155, 4, 4902);
+    			add_location(input, file, 155, 4, 4898);
     			attr_dev(div0, "class", "svelte-1gsx3hw");
-    			add_location(div0, file, 152, 2, 4769);
+    			add_location(div0, file, 152, 2, 4765);
     			attr_dev(div1, "class", "div1 svelte-1gsx3hw");
-    			add_location(div1, file, 160, 4, 5058);
+    			add_location(div1, file, 160, 4, 5054);
     			set_style(div2, "margin", "5px");
     			attr_dev(div2, "class", "svelte-1gsx3hw");
-    			add_location(div2, file, 167, 6, 5602);
+    			add_location(div2, file, 167, 6, 5598);
     			set_style(div3, "margin", "5px");
     			attr_dev(div3, "class", "svelte-1gsx3hw");
-    			add_location(div3, file, 168, 6, 5663);
+    			add_location(div3, file, 168, 6, 5659);
     			set_style(div4, "margin", "5px");
     			attr_dev(div4, "class", "svelte-1gsx3hw");
-    			add_location(div4, file, 170, 6, 5879);
+    			add_location(div4, file, 170, 6, 5875);
     			set_style(div5, "margin", "5px");
     			attr_dev(div5, "class", "svelte-1gsx3hw");
-    			add_location(div5, file, 171, 6, 5940);
+    			add_location(div5, file, 171, 6, 5936);
     			set_style(div6, "margin", "5px");
     			attr_dev(div6, "class", "svelte-1gsx3hw");
-    			add_location(div6, file, 173, 6, 6165);
+    			add_location(div6, file, 173, 6, 6161);
     			set_style(div7, "margin", "5px");
     			attr_dev(div7, "class", "svelte-1gsx3hw");
-    			add_location(div7, file, 174, 6, 6226);
+    			add_location(div7, file, 174, 6, 6222);
     			attr_dev(div8, "class", "sliders svelte-1gsx3hw");
-    			add_location(div8, file, 165, 4, 5401);
+    			add_location(div8, file, 165, 4, 5397);
     			attr_dev(div9, "class", "div2 svelte-1gsx3hw");
-    			add_location(div9, file, 176, 4, 6287);
+    			add_location(div9, file, 176, 4, 6283);
     			attr_dev(div10, "class", "parent svelte-1gsx3hw");
-    			add_location(div10, file, 159, 2, 5032);
+    			add_location(div10, file, 159, 2, 5028);
     			attr_dev(main, "class", "svelte-1gsx3hw");
-    			add_location(main, file, 151, 0, 4759);
+    			add_location(main, file, 151, 0, 4755);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -6412,14 +6403,14 @@ var app = (function () {
     		p: function update(ctx, dirty) {
     			const button0_changes = {};
 
-    			if (dirty[1] & /*$$scope*/ 1024) {
+    			if (dirty[1] & /*$$scope*/ 512) {
     				button0_changes.$$scope = { dirty, ctx };
     			}
 
     			button0.$set(button0_changes);
     			const button1_changes = {};
 
-    			if (dirty[1] & /*$$scope*/ 1024) {
+    			if (dirty[1] & /*$$scope*/ 512) {
     				button1_changes.$$scope = { dirty, ctx };
     			}
 
@@ -6431,14 +6422,14 @@ var app = (function () {
 
     			const button2_changes = {};
 
-    			if (dirty[1] & /*$$scope*/ 1024) {
+    			if (dirty[1] & /*$$scope*/ 512) {
     				button2_changes.$$scope = { dirty, ctx };
     			}
 
     			button2.$set(button2_changes);
     			const radiobutton0_changes = {};
 
-    			if (dirty[1] & /*$$scope*/ 1024) {
+    			if (dirty[1] & /*$$scope*/ 512) {
     				radiobutton0_changes.$$scope = { dirty, ctx };
     			}
 
@@ -6451,7 +6442,7 @@ var app = (function () {
     			radiobutton0.$set(radiobutton0_changes);
     			const radiobutton1_changes = {};
 
-    			if (dirty[1] & /*$$scope*/ 1024) {
+    			if (dirty[1] & /*$$scope*/ 512) {
     				radiobutton1_changes.$$scope = { dirty, ctx };
     			}
 
@@ -6464,7 +6455,7 @@ var app = (function () {
     			radiobutton1.$set(radiobutton1_changes);
     			const radiobutton2_changes = {};
 
-    			if (dirty[1] & /*$$scope*/ 1024) {
+    			if (dirty[1] & /*$$scope*/ 512) {
     				radiobutton2_changes.$$scope = { dirty, ctx };
     			}
 
@@ -6696,7 +6687,6 @@ var app = (function () {
     			let newAudioStore = JSON.parse(result);
     			$$invalidate(1, audioStore[idx] = newAudioStore[idx], audioStore);
     			$$invalidate(1, audioStore);
-    			console.log("Hello!");
     		}).catch(error => console.log('error', error));
     	};
 
@@ -6764,8 +6754,9 @@ var app = (function () {
     	function handlePhonemeInput(e, i, j) {
     		const newPhoneme = e.target.value;
 
-    		if (newPhoneme.length == 0) {
+    		if (newPhoneme == "") {
     			audioStore[i].marks.splice(j, 1);
+    			$$invalidate(1, audioStore);
     			return;
     		}
 
@@ -6874,10 +6865,6 @@ var app = (function () {
     	const wheel_handler_5 = (marks, each_value_1, j, event) => $$invalidate(1, each_value_1[j].eng += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag, audioStore);
     	const change_handler = (i, j, e) => handlePhonemeInput(e, i, j);
 
-    	const click_handler = () => {
-    		console.log("hello?");
-    	};
-
     	$$self.$capture_state = () => ({
     		Button,
     		Flyout: FlyoutWrapper,
@@ -6949,8 +6936,7 @@ var app = (function () {
     		wheel_handler_4,
     		slider_value_binding_2,
     		wheel_handler_5,
-    		change_handler,
-    		click_handler
+    		change_handler
     	];
     }
 
