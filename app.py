@@ -14,25 +14,32 @@ from util.frontend import get_phoneme_vec, extract_stress, marks
 
 MAX_VALUE = 0x7FFF  # the max value of int16
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-predictor = VariancePredictor(idim=14, edim=9, adim=32, odim=1, kernel_size=3, num_layer=3, l_phoneme=44).to(device)
+# predictor = VariancePredictor(idim=14, edim=9, adim=32, odim=1, kernel_size=3, num_layer=3, l_phoneme=44).to(device)
+pit_pred, dur_pred, eng_pred = [VariancePredictor(idim=14, edim=9, adim=64, odim=1, kernel_size=3, num_layer=8, l_phoneme=44).to(device) for x in range(3)]
 decoder = Decoder(idim=16, edim=9, adim=384, odim=80, phoneme_dim=44, num_block=4).to(device)
 vocoder = None
 mel_sr = 22050 / 256  # sample_rate / hop_size
 
 g2p = G2p()
 
+torch.manual_seed(1234)
 
 def load_pretrained():
-  global predictor, decoder, vocoder
-  predictor.load_state_dict(torch.load("./pretrained/vp-epoch-1000.pth.tar", map_location=device))
+  global pit_pred, dur_pred, eng_pred, decoder, vocoder
+  # predictor.load_state_dict(torch.load("./pretrained/vp-epoch-1000.pth.tar", map_location=device))
+  pit_pred.load_state_dict(torch.load("./pretrained/pp-epoch-100.pth.tar", map_location=device))
+  eng_pred.load_state_dict(torch.load("./pretrained/ep-epoch-100.pth.tar", map_location=device))
+  dur_pred.load_state_dict(torch.load("./pretrained/dp-epoch-100.pth.tar", map_location=device))
   decoder.load_state_dict(torch.load("./pretrained/dec-step-180000.pth.tar", map_location=device)["model"])
-  predictor.eval()
+  pit_pred.eval()
+  dur_pred.eval()
+  eng_pred.eval()
   decoder.eval()
   with open("./pretrained/config.json", "r") as conf:
     config = json.load(conf)
   config = AttrDict(config)
   vocoder = Generator(config)
-  vocoder.load_state_dict(torch.load("./pretrained/generator_LJSpeech.pth.tar", map_location=device)["generator"])
+  vocoder.load_state_dict(torch.load("./pretrained/g_00020000", map_location=device)["generator"])
   vocoder.remove_weight_norm()
   vocoder.eval()
 
@@ -111,7 +118,7 @@ def pred_accent_phrases(text: str):
   phoneme_vec = torch.from_numpy(phoneme_vec).unsqueeze(1)
 
   with torch.no_grad():
-    pit, eng, dur = [x.squeeze() for x in predictor(phoneme_vec, None)]
+    pit, eng, dur = [x.squeeze() for x in (pit_pred(phoneme_vec, None), eng_pred(phoneme_vec, None), dur_pred(phoneme_vec, None))]
 
   accent_phrases = serialize_accent_phrases(dur, pit, eng, phoneme)
 
