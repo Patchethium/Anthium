@@ -39,7 +39,7 @@ def load_pretrained():
     config = json.load(conf)
   config = AttrDict(config)
   vocoder = Generator(config)
-  vocoder.load_state_dict(torch.load("./pretrained/g_00020000", map_location=device)["generator"])
+  vocoder.load_state_dict(torch.load("./pretrained/g_02515000", map_location=device)["generator"])
   vocoder.remove_weight_norm()
   vocoder.eval()
 
@@ -69,10 +69,10 @@ def serialize_accent_phrases(dur: np.ndarray, pit: np.ndarray, eng: np.ndarray, 
   return res
 
 
-def deserialize_accent_phrases(accent_phrase, pit_shift, dur_scale, eng_shift):
+def deserialize_accent_phrases(accent_phrases, pit_shift=0.0, dur_scale=1.0, eng_shift=0.0):
   phoneme_list_vec = []
   dur_list = []
-  for accent_item in accent_phrase:
+  for accent_item in accent_phrases:
     for i, mark in enumerate(accent_item["marks"]):
       ph_vec = np.array([marks.index(mark["mark"]) + 1], dtype="float32")
 
@@ -125,6 +125,42 @@ def pred_accent_phrases(text: str):
   return accent_phrases
 
 
+def pred_from_accent_phrases(accent_phrases):
+  phoneme_list_vec = []
+  for accent_item in accent_phrases:
+    for i, mark in enumerate(accent_item["marks"]):
+      ph_vec = np.array([marks.index(mark["mark"]) + 1], dtype="float32")
+
+      pos_vec = np.zeros((2,), dtype="float32")
+      if i == 0:
+        pos_vec[0] = 1.
+      if i == len(accent_item["marks"]) - 1:
+        pos_vec[1] = 1.
+
+      stress = mark["stress"]
+      stress_vec = np.zeros((3,), dtype="float32")
+      if stress is not None:
+        stress_vec[stress] = 1.
+      
+      input_vec = np.concatenate((ph_vec, pos_vec, stress_vec), axis=-1)
+      phoneme_list_vec.append(input_vec)
+  
+  phoneme_vec = np.stack(phoneme_list_vec)
+
+  phoneme_vec = torch.from_numpy(phoneme_vec).unsqueeze(1)
+
+  pit, eng, dur = [x.squeeze() for x in (pit_pred(phoneme_vec, None), eng_pred(phoneme_vec, None), dur_pred(phoneme_vec, None))]
+  
+  idx = 0
+  for accent_item in accent_phrases:
+    for mark in accent_item["marks"]:
+      mark["pit"] = float(pit[idx].squeeze())
+      mark["dur"] = float(dur[idx].squeeze())
+      mark["eng"] = float(eng[idx].squeeze())
+      idx += 1
+  return accent_phrases
+
+
 def _synthesis(accent_phrases, pit_shift, dur_scale, eng_shift):
   with torch.no_grad():
     _, mel = decoder(deserialize_accent_phrases(accent_phrases, pit_shift, dur_scale, eng_shift).unsqueeze(0), None)
@@ -162,6 +198,11 @@ def get_accent_phrases():
   if text == "":
     return ""
   return jsonify(pred_accent_phrases(text))
+
+@app.route("/change_phoneme", methods=["POST"])
+def change_phoneme():
+  accent_phrases = request.json
+  return jsonify(pred_from_accent_phrases(accent_phrases))
 
 
 @app.route("/synthesis", methods=["POST"])

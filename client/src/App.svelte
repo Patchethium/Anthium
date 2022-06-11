@@ -4,6 +4,10 @@
 
   const ctx = new AudioContext();
 
+  const marks = ['', 'AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'B', 'CH', 'D', 'DH', 'EH', 'ER', 'EY', 'F', 'G',
+         'HH', 'IH', 'IY', 'JH', 'K', 'L', 'M', 'N', 'NG', 'OW', 'OY', 'P', 'R', 'S', 'SH', 'T',
+         'TH', 'UH', 'UW', 'V', 'W', 'Y', 'Z', 'ZH', 'sil', 'sp', 'spn'];
+
   let text = "";
   type AccentPhrase = {
     mark: string,
@@ -36,6 +40,28 @@
     fetch(url, requestOptions)
       .then(response => response.text())
       .then(result => audioStore = JSON.parse(result))
+      .catch(error => console.log('error', error));
+  }
+
+  const changePhoneme = async (accent_phrases, idx:number) => {
+    let data = JSON.stringify(accent_phrases);
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let requestOptions: RequestInit = {
+      method: 'POST',
+      headers: myHeaders,
+      body: data,
+      redirect: 'follow'
+    };
+    const url = "/change_phoneme";
+    fetch(url, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        let newAudioStore = JSON.parse(result);
+        audioStore[idx] = newAudioStore[idx];
+        audioStore = audioStore;
+        console.log("Hello!");
+      })
       .catch(error => console.log('error', error));
   }
 
@@ -119,6 +145,42 @@
     }
   })
 
+  function handlePhonemeInput (e: any, i: number, j: number){
+    const newPhoneme:string = e.target.value;
+
+    if (newPhoneme.length == 0){
+      audioStore[i].marks.splice(j,1);
+      return;
+    }
+    
+    const phonemes = newPhoneme.split(",");
+    const newAccentItems = []
+    let stress: null|number = null;
+    for(let p=0; p< phonemes.length; p++){
+      let phoneme = phonemes[p];
+      let mark = "";
+      if (phoneme.length >= 3 && phoneme != "spn"){
+        mark = phoneme.slice(0, -1);
+        stress = Number(phoneme.slice(-1));
+      } else {
+        mark = phoneme;
+      }
+      if (mark == ""){
+        continue;
+      }
+      const accentItem:AccentPhrase = {
+        mark: mark,
+        stress: stress,
+        pit: 0,
+        dur: 0,
+        eng: 0
+      }
+      newAccentItems.push(accentItem);
+    }
+    audioStore[i].marks.splice(j,1, ...newAccentItems);
+    changePhoneme(audioStore, i);
+  }
+
   let dur_scale = 1.0
   let pit_shift = 0
   let eng_shift = 0
@@ -139,19 +201,19 @@
       <RadioButton bind:group={curPanel} value="eng" style="margin: 0 0 0 15px">Energy</RadioButton>
     </div>
     <div class="sliders">
-      <Slider min={-0.5} max={0.5} step={0.001} tooltip={false} bind:value={pit_shift} on:wheel={(event) => pit_shift += 0.001 * -Math.sign(event.deltaY) * shiftKeyFlag} />
+      <Slider min={-0.5} max={0.5} step={0.01} tooltip={false} bind:value={pit_shift} on:wheel={(event) => pit_shift += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag} />
       <div style="margin: 5px">{pit_shift.toFixed(2)}</div>
       <div style="margin: 5px">Pitch Scale</div>
       <Slider min={0} max={2} step={0.01} tooltip={false} bind:value={dur_scale} on:wheel={(event) => dur_scale += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag}/>
       <div style="margin: 5px">{dur_scale.toFixed(2)}</div>
       <div style="margin: 5px">Duration Scale</div>
-      <Slider min={-0.5} max={0.5} step={0.001} tooltip={false} bind:value={eng_shift} on:wheel={(event) => eng_shift += 0.001 * -Math.sign(event.deltaY) * shiftKeyFlag} />
+      <Slider min={-0.5} max={0.5} step={0.01} tooltip={false} bind:value={eng_shift} on:wheel={(event) => eng_shift += 0.01 * -Math.sign(event.deltaY) * shiftKeyFlag} />
       <div style="margin: 5px">{eng_shift.toFixed(2)}</div>
       <div style="margin: 5px">Energy Scale</div>
     </div>
     <div class="div2">
-      {#each audioStore as audioItem}
-        {#each audioItem.marks as marks}
+      {#each audioStore as audioItem, i}
+        {#each audioItem.marks as marks, j}
           <div style="display: grid">
             <div style="block-size: 120px; margin-left:12px; margin-right: 12px">
               {#if curPanel === "pit"}
@@ -171,8 +233,8 @@
                         bind:value={marks.eng}/>
               {/if}
               <div>
-                <Flyout placement="bottom">
-                  <div style="cursor: pointer">
+                <Flyout placement="right">
+                  <div style="cursor: pointer" on:click={()=>{console.log("hello?")}}>
                     {#if marks.stress !== null}
                       {marks.mark + marks.stress}
                     {:else}
@@ -180,10 +242,7 @@
                     {/if}
                   </div>
                   <svelte:fragment slot="flyout">
-                    <TextBox bind:value={marks.mark}/>
-                    {#if marks.stress !== null}
-                      <Slider min={0} max={2} step={1} bind:value={marks.stress}/>
-                    {/if}
+                    <input value={marks.mark+(marks.stress==null? "":marks.stress)} on:change={(e)=>handlePhonemeInput(e, i, j)}/>
                   </svelte:fragment>
                 </Flyout>
               </div>
