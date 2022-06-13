@@ -1,5 +1,5 @@
-import torch
 from torch import nn
+import torch
 import torch.nn.functional as F
 
 
@@ -30,8 +30,8 @@ class Conv(nn.Module):
 
 class VariancePredictor(nn.Module):
     """
-  Diated CNN with a BiLSTM
-  """
+    Diated CNN with a BiLSTM
+    """
 
     def __init__(
         self,
@@ -46,6 +46,9 @@ class VariancePredictor(nn.Module):
         super(VariancePredictor, self).__init__()
         self.input_layer = nn.Embedding(l_phoneme, edim, padding_idx=0)
         self.pre = nn.Linear(idim, adim)
+
+        self.lstm = nn.LSTM(input_size=adim, hidden_size=adim, bidirectional=True)
+
         self.convs = nn.ModuleList(
             [
                 nn.utils.weight_norm(
@@ -61,15 +64,16 @@ class VariancePredictor(nn.Module):
             ]
         )
 
-        self.lstm = nn.LSTM(input_size=adim, hidden_size=adim, bidirectional=True)
-
         self.post = nn.Linear(2 * adim, odim)
 
-    def forward(
-        self, marks: torch.LongTensor, var: torch.FloatTensor, masks: torch.BoolTensor
-    ):
-        emb = self.input_layer(marks)
-        data = torch.cat((emb, var), dim=-1)
+    def init_hidden(self, batch_size):
+        hidden_state = torch.zeros(self.n_layers, batch_size, self.n_hidden)
+        cell_state = torch.zeros(self.n_layers, batch_size, self.n_hidden)
+        return (hidden_state, cell_state)
+
+    def forward(self, phoneme, masks):
+        ph_slice = phoneme[:, :, 0]
+        p_var = phoneme[:, :, 1:]
         ph_emb = self.input_layer(ph_slice.long())
         ph_input = torch.cat((ph_emb, p_var), dim=-1)
         data = self.pre(ph_input)
@@ -79,7 +83,6 @@ class VariancePredictor(nn.Module):
             data = data + conv(F.dropout(F.relu(data), p=0.1))
         data = data.transpose(1, 2)
         if masks is not None:
-            output = data.masked_fill(masks, 0.0)
+            data = data.masked_fill(masks, 0.0)
         data = F.relu(self.post(data))
         return data
-

@@ -42,22 +42,16 @@ Download all the files from my [Google Drive](https://drive.google.com/drive/fol
 Anthe-training/
   |-pretrained/
     |-dec-step-180000.pth.tar
-    |-vp-epoch-1000.pth.tar
+    |-pp-epoch-100.pth.tar
+    |-dp-epoch-100.pth.tar
+    |-vp-epoch-100.pth.tar
     |-config.json
     |-generator_LJSpeech.pth.tar
   |-...
 ```
-### Inference
-
-```bash
-python inference.py --text "Hello, world!"
-```
-
-Now you may find the synthesized audio at `./output/`.
-
 ### Web GUI
 
-We also provide a simple web GUI for inference.  
+We provide a simple web GUI for inference.  
 First, you need to build the svelte frontend:
 
 ```shell
