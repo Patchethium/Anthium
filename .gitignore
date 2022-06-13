@@ -1,16 +1,76 @@
+# ide settings
 .idea
-.vscode
+.vscode/*
+!.vscode/settings.json
 
-/test/
-
-/pretrained/
-
-/output/
-
-ckpt
-
+# Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+*$py.class
 
-/venv/
+# C extensions
+*.so
 
-data
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Data
+pretrained/
+output/
+corpus/*
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Testing
+test/

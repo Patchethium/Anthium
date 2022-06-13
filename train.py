@@ -16,88 +16,115 @@ from model.optimizer import ScheduledOptim
 
 from model.dataset import MelDataset, PhonemeDataset, pad_collate
 
-train_config = yaml.load(open("config/LJSpeech/train.yaml", "r"), Loader=yaml.FullLoader)
-model_config = yaml.load(open("config/LJSpeech/model.yaml", "r"), Loader=yaml.FullLoader)
-preprocess_config = yaml.load(open("config/LJSpeech/preprocess.yaml", "r"), Loader=yaml.FullLoader)
+train_config = yaml.load(
+    open("config/LJSpeech/train.yaml", "r"), Loader=yaml.FullLoader
+)
+model_config = yaml.load(
+    open("config/LJSpeech/model.yaml", "r"), Loader=yaml.FullLoader
+)
+preprocess_config = yaml.load(
+    open("config/LJSpeech/preprocess.yaml", "r"), Loader=yaml.FullLoader
+)
 
 
 def train_decoder():
-  device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-  model = Decoder(model_config["decoder"]["d_model"], model_config["decoder"]["num_block"], preprocess_config["num_mels"]).to(device)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = Decoder(
+        model_config["decoder"]["d_model"],
+        model_config["decoder"]["num_block"],
+        preprocess_config["num_mels"],
+    ).to(device)
 
-  optimizer = ScheduledOptim(model, train_config, model_config, 0)
+    optimizer = ScheduledOptim(model, train_config, model_config, 0)
 
-  mel_ds = MelDataset(train_config["path"]["mel_path"])
-  mel_dl = DataLoader(mel_ds, shuffle=False, batch_size=train_config["optimizer"]["batch_size"], collate_fn=pad_sequence)
+    mel_ds = MelDataset(train_config["path"]["mel_path"])
+    mel_dl = DataLoader(
+        mel_ds,
+        shuffle=False,
+        batch_size=train_config["optimizer"]["batch_size"],
+        collate_fn=pad_sequence,
+    )
 
-  ph_ds = PhonemeDataset(train_config["path"]["variance_phoneme_path"])
-  ph_dl = DataLoader(ph_ds, shuffle=False, batch_size=train_config["optimizer"]["batch_size"], collate_fn=pad_collate)
+    ph_ds = PhonemeDataset(train_config["path"]["variance_phoneme_path"])
+    ph_dl = DataLoader(
+        ph_ds,
+        shuffle=False,
+        batch_size=train_config["optimizer"]["batch_size"],
+        collate_fn=pad_collate,
+    )
 
-  grad_acc_step = train_config["optimizer"]["grad_acc_step"]
-  grad_clip_thresh = train_config["optimizer"]["grad_clip_thresh"]
-  total_step = train_config["step"]["total_step"]
-  save_step = train_config["step"]["save_step"]
+    grad_acc_step = train_config["optimizer"]["grad_acc_step"]
+    grad_clip_thresh = train_config["optimizer"]["grad_clip_thresh"]
+    total_step = train_config["step"]["total_step"]
+    save_step = train_config["step"]["save_step"]
 
-  step = 1
-  epoch = 1
+    step = 1
+    epoch = 1
 
-  mae = nn.L1Loss()
-  while True:
-    for mel, (phoneme, mask) in zip(mel_dl, ph_dl):
-      opt1, opt2 = model(phoneme.transpose(0, 1), mask.unsqueeze(1))
-      mel = mel.transpose(0, 1)
-      loss2 = mae(opt1, mel)
-      loss1 = mae(opt2, mel)
-      loss = loss1 + loss2
+    mae = nn.L1Loss()
+    while True:
+        for mel, (phoneme, mask) in zip(mel_dl, ph_dl):
+            opt1, opt2 = model(phoneme.transpose(0, 1), mask.unsqueeze(1))
+            mel = mel.transpose(0, 1)
+            loss2 = mae(opt1, mel)
+            loss1 = mae(opt2, mel)
+            loss = loss1 + loss2
 
-      loss = loss / grad_acc_step
-      loss.backward()
+            loss = loss / grad_acc_step
+            loss.backward()
 
-      if step % grad_acc_step == 0:
-        # Clipping gradients to avoid gradient explosion
-        nn.utils.clip_grad_norm_(model.parameters(), grad_clip_thresh)
+            if step % grad_acc_step == 0:
+                # Clipping gradients to avoid gradient explosion
+                nn.utils.clip_grad_norm_(model.parameters(), grad_clip_thresh)
 
-        # Update weights
-        optimizer.step_and_update_lr()
-        optimizer.zero_grad()
+                # Update weights
+                optimizer.step_and_update_lr()
+                optimizer.zero_grad()
 
-      if step % save_step == 0:
-        torch.save(
-          {
-            "model": model.module.state_dict(),
-            "optimizer": optimizer._optimizer.state_dict(),
-          },
-          os.path.join(
-            train_config["path"]["ckpt_path"],
-            "{}.pth.tar".format(step),
-          ),
-        )
+            if step % save_step == 0:
+                torch.save(
+                    {
+                        "model": model.module.state_dict(),
+                        "optimizer": optimizer._optimizer.state_dict(),
+                    },
+                    os.path.join(
+                        train_config["path"]["ckpt_path"], "{}.pth.tar".format(step),
+                    ),
+                )
 
-      if step == total_step:
-        quit()
+            if step == total_step:
+                quit()
 
-      step += 1
-    epoch += 1
-    print(f"epoch {epoch}, step: {step}, loss: {loss.item()}")
+            step += 1
+        epoch += 1
+        print(f"epoch {epoch}, step: {step}, loss: {loss.item()}")
+
 
 def main():
-  parser = argparse.ArgumentParser()
-  parser.add_argument("--type", default="decoder")
-  parser.add_argument("--checkpoint_path", default="default")
-  parser.add_argument("--config_path", default="../config/LJSpeech/")
-  parser.add_argument("--type", default="vp", help="which model you'd like to train, values: 'predictor', 'decoder' ")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--type", default="decoder")
+    parser.add_argument("--checkpoint_path", default="default")
+    parser.add_argument("--config_path", default="../config/LJSpeech/")
+    parser.add_argument(
+        "--type",
+        default="vp",
+        help="which model you'd like to train, values: 'predictor', 'decoder' ",
+    )
 
-  a = parser.parse_args()
+    a = parser.parse_args()
 
-  model_config = None
-  for i in [os.path.join(a.config_path, fn) for fn in ("model.yaml", "train.yaml", "preprocess.yaml")]:
-    with open(i, "r") as stream:
-      try:
-        model_config = yaml.safe_load(stream)
-      except yaml.YAMLError as exc:
-        print(exc)
-        return
+    model_config = None
+    for i in [
+        os.path.join(a.config_path, fn)
+        for fn in ("model.yaml", "train.yaml", "preprocess.yaml")
+    ]:
+        with open(i, "r") as stream:
+            try:
+                model_config = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+                return
 
 
 if __name__ == "__main__":
-  train_decoder()
+    train_decoder()
