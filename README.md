@@ -1,4 +1,4 @@
-# Anthe-training
+# Anthium
 
 Training recipe for the TTS system [Anthe](https://github.com/Patchethium/Anthe).
 
