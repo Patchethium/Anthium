@@ -11,8 +11,8 @@ At this point this repository only supports inference from pre-trained models, I
 ### Clone this repository
 
 ```bash
-git clone https://github.com/Patchethium/Anthe-training.git
-cd Anthe-training
+git clone https://github.com/Patchethium/Anthium.git
+cd Anthium
 ```
 
 ### Install dependencies
