@@ -1,5 +1,5 @@
 from .hifigan import Generator
-from .variance_predictor import VariancePredictor
+from .predictor import VariancePredictor
 from .decoder import Decoder
 from .optimizer import ScheduledOptim
 from .dataset import PhonemeDataset, MelDataset, VarGeneralDataset

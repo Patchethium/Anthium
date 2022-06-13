@@ -1,6 +1,7 @@
 import librosa
 import numpy as np
 import torch
+from torch.nn.functional import pad
 
 
 def dynamic_range_compression(x, C=1, clip_val=1e-5):
@@ -40,6 +41,7 @@ class Mel:
         fmin,
         fmax,
         center=False,
+        **_,
     ):
         self.n_fft = n_fft
         self.hop_size = hop_size
@@ -60,7 +62,7 @@ class Mel:
         y = torch.from_numpy(data)
         y = pad(
             y.unsqueeze(0),
-            (int((n_fft - hop_size) / 2), int((n_fft - hop_size) / 2)),
+            (int((self.n_fft - self.hop_size) / 2), int((self.n_fft - self.hop_size) / 2)),
             mode="reflect",
         )
         spec = torch.stft(
@@ -71,6 +73,7 @@ class Mel:
             win_length=self.win_size,
             center=self.center,
             pad_mode="reflect",
+            return_complex=False
         )
         spec = torch.sqrt(spec.pow(2).sum(-1) + (1e-9)).float()
         spec = torch.matmul(self.mel, spec)
