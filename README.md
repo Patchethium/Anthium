@@ -44,7 +44,7 @@ Anthe-training/
     |-dec-step-180000.pth.tar
     |-pp-epoch-100.pth.tar
     |-dp-epoch-100.pth.tar
-    |-vp-epoch-100.pth.tar
+    |-ep-epoch-100.pth.tar
     |-config.json
     |-generator_LJSpeech.pth.tar
   |-...
